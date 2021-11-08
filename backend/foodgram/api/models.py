@@ -1,23 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 
 
-class CustomUser(AbstractUser):
-    class Roles(models.TextChoices):
-        ADMIN = 'admin'
-        USER = 'user'
-
-    id = models.BigAutoField(primary_key=True)
-    confirmation_code = models.CharField(max_length=16, verbose_name='Код')
-    bio = models.CharField(max_length=254, null=True, blank=True)
-    role = models.CharField(max_length=50, verbose_name='Название роли',
-                            null=True, choices=Roles.choices)
-    email = models.EmailField(verbose_name='email', unique=True, max_length=254)
-    username = models.CharField(unique=True, max_length=150)
-    subscriptions = models.ManyToManyField("self", symmetrical=False)
-    favorits = models.ManyToManyField(Recipe)
-    shopping_carts = models.ManyToManyField(Recipe)
+CustomUser = get_user_model()
 
 
 class Tag(models.Model):
@@ -47,6 +33,8 @@ class Recipe(models.Model):
                                          through='IngredientInRecipe',
                                          through_fields=('recipe_id', 'ingredient_id'),
                                          )
+    favorits = models.ManyToManyField(CustomUser)
+    shopping_carts = models.ManyToManyField(CustomUser)
 
 
 class IngredientInRecipe(models.Model):
