@@ -9,9 +9,3 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = User
-
-
-class UserTokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ('email', 'confirmation_code')
-        model = User
