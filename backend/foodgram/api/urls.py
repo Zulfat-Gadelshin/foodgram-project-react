@@ -3,13 +3,10 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 
+
 router = DefaultRouter()
-router.register('auth/email', views.AuthEmailViewSet, basename='email')
-router.register('auth/token', views.AuthTokenViewSet, basename='token')
-router.register('users', views.UserViewSet, basename='user')
-router.register('users/<int:id>',viewset= )#, views.UserViewSet, basename='user_id')
-router.register('tags', views.TagsViewSet, basename='tags')
-router.register('recipes', views.RecipesViewSet, basename='recipes')
+router.register('tags', views.TagViewSet, basename='tags')
+router.register('recipes', views.RecipeViewSet, basename='recipes')
 router.register(
     r'recipes/(?P<recipes_id>[0-9]+)/shopping_cart',
     views.Shopping_cartViewSet, 'shopping_cart')
@@ -28,9 +25,6 @@ router.register(
     views.IngredientsViewSet,
     basename='ingredients')
 
-# router.register(
-#     r'titles/(?P<title_id>[0-9]+)/reviews',
-#     views.ReviewViewSet, 'Reviews')
 
 urlpatterns = [
     path('', include(router.urls)),
