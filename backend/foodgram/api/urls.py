@@ -7,6 +7,10 @@ from . import views
 router = DefaultRouter()
 router.register('tags', views.TagViewSet, basename='tags')
 router.register('recipes', views.RecipeViewSet, basename='recipes')
+router.register(
+    'ingredients',
+    views.IngredientViewSet,
+    basename='ingredients')
 """router.register(
     r'recipes/(?P<recipes_id>[0-9]+)/shopping_cart',
     views.Shopping_cartViewSet, 'shopping_cart')

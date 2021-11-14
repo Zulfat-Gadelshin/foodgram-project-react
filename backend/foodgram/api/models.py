@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
+from colorfield.fields import ColorField
 
 
 CustomUser = get_user_model()
@@ -9,7 +10,8 @@ CustomUser = get_user_model()
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=200, unique=True)
-    color = models.CharField(max_length=7, unique=True)
+    color = ColorField()
+    #color = models.CharField(max_length=7, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
 
 

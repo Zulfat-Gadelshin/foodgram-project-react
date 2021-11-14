@@ -17,8 +17,8 @@ User = get_user_model()
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CustomUserSerializer
     # authentication_classes = (authentication.JWTAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, IsAdmin)
-    pagination_class = PageNumberPagination
+    # permission_classes = (permissions.IsAuthenticated, IsAdmin)
+    #pagination_class = PageNumberPagination
     lookup_field = 'username'
     queryset = User.objects.all()
 
