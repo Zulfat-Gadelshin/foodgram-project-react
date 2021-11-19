@@ -16,9 +16,13 @@ User = get_user_model()
 
 
 class UserViewSet(UserViewSet):
-    pass
     #serializer_class = serializers.CustomUserSerializer
     # authentication_classes = (authentication.JWTAuthentication,)
     # permission_classes = (permissions.IsAuthenticated, IsAdmin)
     #pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = User.objects.all()
+        return queryset
 
