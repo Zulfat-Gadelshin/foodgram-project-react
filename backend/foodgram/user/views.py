@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt import authentication
+from djoser.views import UserViewSet
 
 from . import serializers
 from .permissions import *
@@ -14,7 +15,8 @@ from .models import *
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+#class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(UserViewSet):
     serializer_class = serializers.CustomUserSerializer
     # authentication_classes = (authentication.JWTAuthentication,)
     # permission_classes = (permissions.IsAuthenticated, IsAdmin)
