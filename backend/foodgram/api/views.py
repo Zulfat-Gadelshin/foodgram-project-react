@@ -24,6 +24,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    permission_classes = None
 
 
 class IngredientInRecipeViewSet(viewsets.ModelViewSet):
