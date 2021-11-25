@@ -16,13 +16,12 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField('get_image_url')
 
-    def get_image_url(self, obj):
-        return obj.image.url
 
     class Meta:
-        fields = ('__all__', 'image_url')
+        fields = ('id', 'tags', 'author', 'ingredients',
+                  #'is_favorited', 'is_in_shopping_cart',
+                  'name', 'image', 'text', 'cooking_time')
         model = Recipe
 
 

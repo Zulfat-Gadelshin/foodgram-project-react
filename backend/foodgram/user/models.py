@@ -27,3 +27,6 @@ class CustomUser(AbstractUser):
     @property
     def is_user(self):
         return self.role == 'user'
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} {self.email}'

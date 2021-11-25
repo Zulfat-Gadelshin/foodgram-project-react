@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
     #'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPageLimitPagination',
-    'PAGE_SIZE': 2,
+    'PAGE_SIZE': 5,
 
 
 }
