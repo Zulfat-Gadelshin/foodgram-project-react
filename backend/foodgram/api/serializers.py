@@ -16,8 +16,6 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         fields = ('id', 'tags', 'author', 'ingredients',
                   #'is_favorited', 'is_in_shopping_cart',
@@ -29,3 +27,4 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = IngredientInRecipe
+

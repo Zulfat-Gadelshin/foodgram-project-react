@@ -1,9 +1,12 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, permissions
 from .models import *
 from .serializers import *
 from .filters import IngredientFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import CustomPageLimitPagination
+from rest_framework.response import Response
+
+User = get_user_model()
 
 
 class TagViewSet(viewsets.mixins.ListModelMixin,
@@ -28,3 +31,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
 
+
+class SubscriptionsViewSet(viewsets.mixins.ListModelMixin,
+                           viewsets.GenericViewSet):
+    pagination_class = CustomPageLimitPagination
+    permission_classes = permissions.IsAuthenticated
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.subscriptions.all()

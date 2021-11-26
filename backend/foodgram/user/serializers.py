@@ -14,3 +14,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
         model = User
+
+# class CustomUserSerializerWithRecipes(serializers.ModelSerializer):
+#     is_subscribed = serializers.SerializerMethodField()
+#
+#     def get_is_subscribed(self, obj):
+#         user = self.context.get('request').user
+#         return user.subscriptions.filter(id=obj.id).exists()
+#
+#     class Meta:
+#         fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
+#         model = User
