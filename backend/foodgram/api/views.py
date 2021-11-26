@@ -30,13 +30,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
-
-
-class SubscriptionsViewSet(viewsets.mixins.ListModelMixin,
-                           viewsets.GenericViewSet):
-    pagination_class = CustomPageLimitPagination
-    permission_classes = permissions.IsAuthenticated
-
-    def get_queryset(self):
-        user = self.request.user
-        return user.subscriptions.all()

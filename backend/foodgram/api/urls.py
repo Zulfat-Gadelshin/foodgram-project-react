@@ -11,7 +11,6 @@ router.register(
     views.IngredientViewSet,
     basename='ingredients')
 router.register('recipes/', views.RecipeViewSet, basename='recipes')
-#router.register('users/subscriptions/', views.SubscriptionsViewSet, basename='subscriptions')
 
 """router.register(
     r'recipes/(?P<recipes_id>[0-9]+)/shopping_cart',
