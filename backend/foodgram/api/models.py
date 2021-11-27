@@ -44,6 +44,9 @@ class Recipe(models.Model):
     favorits = models.ManyToManyField(CustomUser, related_name='favorite_recipes', blank=True)
     shopping_carts = models.ManyToManyField(CustomUser, related_name='cards_recipes', blank=True,)
 
+    def __str__(self):
+        return self.name
+
 
 class IngredientInRecipe(models.Model):
     id = models.BigAutoField(primary_key=True)

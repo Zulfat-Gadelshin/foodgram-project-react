@@ -41,14 +41,12 @@ class UserViewSet(UserViewSet):
 
 
 class SubscribeViewSet(viewsets.mixins.CreateModelMixin,
-                       viewsets.mixins.DestroyModelMixin,
                        viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def create(self, request, user_id):
         sub = get_object_or_404(User, id=user_id)
         user = request.user
-        print(user.subscriptions.filter(id=user_id))
         if user.id == user_id:
             content = {'errors': 'Невозможно подписаться на себя.'}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
@@ -56,5 +54,14 @@ class SubscribeViewSet(viewsets.mixins.CreateModelMixin,
             content = {'errors': 'Вы уже подписаны на пользователя.'}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         user.subscriptions.add(sub)
-        serializer = serializers.CustomUserSerializer(sub)
+        serializer = serializers.CustomUserSerializer(sub, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, user_id):
+        sub = get_object_or_404(User, id=user_id)
+        user = request.user
+        if not user.subscriptions.filter(id=user_id).exists():
+            content = {'errors': 'Не подписан на пользователя.'}
+            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+        user.subscriptions.remove(sub)
+        return Response(status=status.HTTP_204_NO_CONTENT)
