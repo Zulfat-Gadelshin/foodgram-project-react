@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters, permissions, status
+from rest_framework import viewsets, filters, permissions, status, renderers
 from .models import *
 from .serializers import *
 from .filters import IngredientFilter
@@ -38,10 +38,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
         cur_user = request.user
-        serializer = IngredientInRecipeSerializer(cur_user.cards_recipes.all(), context={'request': request}, many=True)
+        serializer = RecipeSerializer(cur_user.cards_recipes.all(), context={'request': request}, many=True)
+        shoping_cart = []
+        a=''
+        for recipe in serializer.data[:]:
+            for ingredient in recipe['ingredients']:
+                shoping_cart.append(ingredient)
+                a = a + ingredient['name'] + ' '
+        print(shoping_cart)
         # serializer = RecipeSerializer(cur_user.cards_recipes.all(),context={'request': request}, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK, content_type='text/plain')
+        return Response(a, status=status.HTTP_200_OK, content_type='text/plain')
 
 
 class FavoriteViewSet(viewsets.mixins.CreateModelMixin,

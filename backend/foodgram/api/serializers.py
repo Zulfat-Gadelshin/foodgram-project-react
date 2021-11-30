@@ -22,11 +22,21 @@ class RecipeSuccessAddSerializer(serializers.ModelSerializer):
         model = Recipe
 
 
+class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+
+    class Meta:
+        fields = ('name', 'amount', 'measurement_unit')
+        model = IngredientInRecipe
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     tags = TagSerializer('tags', many=True)
     author = CustomUserSerializer('author')
+    ingredients = IngredientInRecipeSerializer(source='recipe_to_ingredient', many=True)
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
@@ -41,14 +51,3 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
         model = Recipe
-
-
-class IngredientInRecipeSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='ingredients.ingredient_id.name')
-    measure_unit = serializers.FloatField(source='ingredients.ingredient_id.measure_unit')
-    amount = serializers.FloatField(source='ingredients.amount')
-
-    class Meta:
-        fields = ('name', 'amount', 'measure_unit')
-        model = Recipe
-

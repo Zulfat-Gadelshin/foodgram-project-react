@@ -50,6 +50,6 @@ class Recipe(models.Model):
 
 class IngredientInRecipe(models.Model):
     id = models.BigAutoField(primary_key=True)
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredient_id = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='recipe_to_ingredient')
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='ingredient_to_recipe')
     amount = models.IntegerField(validators=[MinValueValidator(1)])
