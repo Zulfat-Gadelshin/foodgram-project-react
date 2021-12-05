@@ -40,14 +40,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         cur_user = request.user
         serializer = RecipeSerializer(cur_user.cards_recipes.all(), context={'request': request}, many=True)
         shoping_cart = []
+        ingridients_name = []
         a=''
         for recipe in serializer.data[:]:
             for ingredient in recipe['ingredients']:
-                shoping_cart.append(ingredient)
-                a = a + ingredient['name'] + ' '
-        print(shoping_cart)
-        # serializer = RecipeSerializer(cur_user.cards_recipes.all(),context={'request': request}, many=True)
+                if ingredient['name'] in ingridients_name:
+                    number = ingridients_name.index(ingredient['name'])
+                    shoping_cart[number]['amount'] += ingredient['amount']
+                else:
+                    ingridients_name.append(ingredient['name'])
+                    shoping_cart.append(ingredient)
 
+        for i in shoping_cart:
+            a += f'{i["name"]} {(i["amount"])} {i["measurement_unit"]} \n'
         return Response(a, status=status.HTTP_200_OK, content_type='text/plain')
 
 

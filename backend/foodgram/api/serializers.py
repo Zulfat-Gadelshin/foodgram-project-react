@@ -26,7 +26,7 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
 
-    class Meta:
+    class Meta:.
         fields = ('name', 'amount', 'measurement_unit')
         model = IngredientInRecipe
 
