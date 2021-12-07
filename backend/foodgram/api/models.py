@@ -30,15 +30,13 @@ class Recipe(models.Model):
     id = models.BigAutoField(primary_key=True)
     tags = models.ManyToManyField(Tag, related_name='tags_recipes')
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='authors_recipes')
     image = models.ImageField(blank=True, null=True)
     text = models.TextField()
     cooking_time = models.IntegerField(validators=[MinValueValidator(1), ])
-
     ingredients = models.ManyToManyField(Ingredient,
                                          through='IngredientInRecipe',
-                                         through_fields=('recipe_id', 'ingredient_id'),
+                                         through_fields=('recipe', 'ingredient'),
                                          related_name='ingredients_recipes',
                                          blank=True,)
     favorits = models.ManyToManyField(CustomUser, related_name='favorite_recipes', blank=True)

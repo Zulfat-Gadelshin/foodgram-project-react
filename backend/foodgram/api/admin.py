@@ -29,6 +29,6 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(IngredientInRecipe)
 class IngredientInRecipeAdmin(admin.ModelAdmin):
     list_display = (
-        "id","recipe_id","ingredient_id", "amount")
+        'id', 'recipe', 'ingredient', 'amount')
     search_fields = ('name',)
     empty_value_display = '-пусто-'

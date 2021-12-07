@@ -34,6 +34,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
 
+    def create(self, request, *args, **kwargs):
+        serializer = RecipeCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=request.user)
+        print(request.data['ingredients'])
+        print(serializer.instance)
+        for ingredient in request.data['ingredients']:
+            IngredientInRecipe.objects.create(recipe=serializer.instance,
+                                              ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
+                                              amount=ingredient['amount']
+                                              )
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     @action(detail=False, methods=('GET',),
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
@@ -41,7 +55,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeSerializer(cur_user.cards_recipes.all(), context={'request': request}, many=True)
         shoping_cart = []
         ingridients_name = []
-        a=''
         for recipe in serializer.data[:]:
             for ingredient in recipe['ingredients']:
                 if ingredient['name'] in ingridients_name:
@@ -50,10 +63,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 else:
                     ingridients_name.append(ingredient['name'])
                     shoping_cart.append(ingredient)
-
+        shoping_list = ''
         for i in shoping_cart:
-            a += f'{i["name"]} {(i["amount"])} {i["measurement_unit"]} \n'
-        return Response(a, status=status.HTTP_200_OK, content_type='text/plain')
+            shoping_list += f'{i["name"]} {(i["amount"])} {i["measurement_unit"]} \n'
+        return Response(shoping_list, status=status.HTTP_200_OK, content_type='text/plain')
 
 
 class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
