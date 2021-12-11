@@ -14,6 +14,7 @@ User = get_user_model()
 class UserViewSet(UserViewSet):
     serializer_class = serializers.CustomUserSerializer
     pagination_class = PageNumberPagination
+    permission_classes = None
 
     def get_queryset(self):
         return User.objects.all()
@@ -21,9 +22,9 @@ class UserViewSet(UserViewSet):
     @action(detail=False, methods=('GET',),
             permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
-        cur_user = request.user
+        # cur_user =
         if request.method == 'GET':
-            serializer = self.get_serializer(cur_user)
+            serializer = self.serializer_class(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=('GET',),
@@ -33,10 +34,10 @@ class UserViewSet(UserViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = serializers.CustomUserWithRecipesSerializer(page, many=True, context={'request': request})
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = serializers.CustomUserWithRecipesSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
 

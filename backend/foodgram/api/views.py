@@ -27,19 +27,18 @@ class IngredientViewSet(viewsets.mixins.ListModelMixin,
     serializer_class = IngredientSerializer
     filter_backends = [DjangoFilterBackend, ]
     filter_class = IngredientFilter
-
+    pagination_class = None
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
 
+
     def create(self, request, *args, **kwargs):
         serializer = RecipeCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
-        print(request.data['ingredients'])
-        print(serializer.instance)
         for ingredient in request.data['ingredients']:
             IngredientInRecipe.objects.create(recipe=serializer.instance,
                                               ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
@@ -65,7 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     shoping_cart.append(ingredient)
         shoping_list = ''
         for i in shoping_cart:
-            shoping_list += f'{i["name"]} {(i["amount"])} {i["measurement_unit"]} \n'
+            shoping_list += f' {i["name"]} {(i["amount"])} {i["measurement_unit"]}  \n'
         return Response(shoping_list, status=status.HTTP_200_OK, content_type='text/plain')
 
 
@@ -119,5 +118,3 @@ class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         user.cards_recipes.remove(shop)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
