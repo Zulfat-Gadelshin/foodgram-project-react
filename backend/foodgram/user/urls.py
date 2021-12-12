@@ -11,7 +11,6 @@ router.register('users/(?P<user_id>[0-9]+)/subscribe', views.SubscribeViewSet, b
 router.register('users', views.UserViewSet, basename='user')
 
 
-
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/token/login/', TokenCreateView.as_view(), name='login'),

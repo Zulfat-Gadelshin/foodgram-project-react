@@ -40,11 +40,15 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
-        return user.favorite_recipes.filter(id=obj.id).exists()
+        if user.is_authenticated:
+            return user.favorite_recipes.filter(id=obj.id).exists()
+        return False
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
-        return user.cards_recipes.filter(id=obj.id).exists()
+        if user.is_authenticated:
+            return user.cards_recipes.filter(id=obj.id).exists()
+        return False
 
     class Meta:
         fields = ('id', 'tags', 'author', 'ingredients',
@@ -53,26 +57,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
 
 
-# class IngredientInRecipeCreateSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = IngredientInRecipe
-#         fields = ('id', 'amount')
-
 class RecipeCreateSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         slug_field='username', read_only=True
     )
-    # ingredients = serializers.PrimaryKeyRelatedField(read_only=False, many=True, queryset=Ingredient.objects.all())
-    # ingredients = IngredientInRecipeCreateSerializer(many=True)
+
     class Meta:
         model = Recipe
         fields = ('id', 'tags', 'ingredients', 'author',
                   'name', 'image', 'text', 'cooking_time')
-
-    # def create(self, validated_data):
-    #     instance = super().create(validated_data)
-    #     print(self.data['ingredients'])
-    #     # for ingredient in validated_data['ingredients']:
-    #     #     #IngredientInRecipe.objects.create(recipe=instance, ingredient=ingredient['id'], amount=ingredient['amount'])
-    #     #     print(ingredient)
-    #     return instance
