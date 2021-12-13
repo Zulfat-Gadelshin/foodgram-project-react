@@ -35,10 +35,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
-    permission_classes = [IsOwnerOrReadOnly, ]
+    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = RecipeCreateSerializer(data=request.data)
+        request.data['author'] = CustomUserSerializer(request.user)
+        serializer = RecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
         for ingredient in request.data['ingredients']:
