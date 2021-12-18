@@ -34,20 +34,22 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    tags = TagSerializer('tags', many=True)
-    author = CustomUserSerializer('author')
-    ingredients = IngredientInRecipeSerializer(source='recipe_to_ingredient', many=True)
+    tags = TagSerializer('tags', many=True, read_only=True)
+    author = CustomUserSerializer('author', read_only=True)
+    ingredients = IngredientInRecipeSerializer(source='recipe_to_ingredient', many=True, read_only=True)
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            return user.favorite_recipes.filter(id=obj.id).exists()
+        if hasattr(self.context.get('request'), 'user'):
+            user = self.context.get('request').user
+            if user.is_authenticated:
+                return user.favorite_recipes.filter(id=obj.id).exists()
         return False
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            return user.cards_recipes.filter(id=obj.id).exists()
+        if hasattr(self.context.get('request'), 'user'):
+            user = self.context.get('request').user
+            if user.is_authenticated:
+                return user.cards_recipes.filter(id=obj.id).exists()
         return False
 
     class Meta:
@@ -55,14 +57,3 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
         model = Recipe
-
-
-class RecipeCreateSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field='username', read_only=True
-    )
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'tags', 'ingredients', 'author',
-                  'name', 'image', 'text', 'cooking_time')

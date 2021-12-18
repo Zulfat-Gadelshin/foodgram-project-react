@@ -1,6 +1,8 @@
 import django_filters
+from django.contrib.auth import get_user_model
+from .models import Ingredient, Recipe
 
-from .models import Ingredient
+User = get_user_model()
 
 
 class IngredientFilter(django_filters.FilterSet):
@@ -9,3 +11,11 @@ class IngredientFilter(django_filters.FilterSet):
     class Meta:
         model = Ingredient
         fields = ['name', ]
+
+
+class RecipeFilter(django_filters.FilterSet):
+    tags = django_filters.CharFilter(field_name='tags__slug', lookup_expr='exact')
+
+    class Meta:
+        model = Recipe
+        fields = ['author', 'tags', ]

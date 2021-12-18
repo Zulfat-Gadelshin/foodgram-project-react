@@ -11,18 +11,14 @@ from django.shortcuts import get_object_or_404
 User = get_user_model()
 
 
-class UserViewSet(UserViewSet):
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
     serializer_class = serializers.CustomUserSerializer
     pagination_class = PageNumberPagination
-    permission_classes = None
-
-    def get_queryset(self):
-        return User.objects.all()
 
     @action(detail=False, methods=('GET',),
             permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
-        # cur_user =
         if request.method == 'GET':
             serializer = self.serializer_class(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -31,12 +27,10 @@ class UserViewSet(UserViewSet):
             permission_classes=[permissions.IsAuthenticated])
     def subscriptions(self, request):
         queryset = self.filter_queryset(request.user.subscriptions.all())
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = serializers.CustomUserWithRecipesSerializer(page, many=True, context={'request': request})
             return self.get_paginated_response(serializer.data)
-
         serializer = serializers.CustomUserWithRecipesSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -55,7 +49,7 @@ class SubscribeViewSet(viewsets.mixins.CreateModelMixin,
             content = {'errors': 'Вы уже подписаны на пользователя.'}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         user.subscriptions.add(sub)
-        serializer = serializers.CustomUserSerializer(sub, context={'request': request})
+        serializer = serializers.CustomUserWithRecipesSerializer(sub, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, user_id):

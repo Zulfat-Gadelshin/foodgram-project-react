@@ -1,10 +1,11 @@
 from rest_framework import viewsets, filters, permissions, status, renderers
 from .models import *
 from .serializers import *
-from .filters import IngredientFilter
+from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPageLimitPagination
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,19 +27,52 @@ class IngredientViewSet(viewsets.mixins.ListModelMixin,
                         viewsets.GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = [DjangoFilterBackend, ]
     filter_class = IngredientFilter
     pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    '''
+    -Фильтрация по подписке и списку избранного
+    -Загрузка картинок
+    '''
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
     permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
+    filter_class = RecipeFilter
+    # filter_backends = (DjangoFilterBackend,)
+    # filter_fields = ('is_favorited', 'is_in_shopping_cart')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            # is_favorited = self.request.query_params.get('is_favorited')
+            # if is_favorited is not None:
+            #     for i in range(len(serializer.data)):
+            #         if serializer.data[i]['is_favorited'] != is_favorited:
+            #             serializer.data.pop(i)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #
+    #     is_favorited = self.request.query_params.get('is_favorited')
+    #     if is_favorited is not None:
+    #         for i in range(len(queryset)):
+    #
+    #
+    #
+    #
+    #     return queryset
 
     def create(self, request, *args, **kwargs):
-        request.data['author'] = CustomUserSerializer(request.user)
         serializer = RecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
@@ -53,13 +87,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = RecipeCreateSerializer(instance, data=request.data, partial=partial)
+        serializer = RecipeSerializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
 
         if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
         IngredientInRecipe.objects.filter(recipe=serializer.instance).delete()
@@ -71,8 +103,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(detail=False, methods=('GET',),
-            permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=('GET',))
     def download_shopping_cart(self, request):
         cur_user = request.user
         serializer = RecipeSerializer(cur_user.cards_recipes.all(), context={'request': request}, many=True)
@@ -86,10 +117,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 else:
                     ingridients_name.append(ingredient['name'])
                     shoping_cart.append(ingredient)
-        shoping_list = ''
+        shoping_list = open('shopping_list.txt', 'w+', encoding='utf-8')
         for i in shoping_cart:
-            shoping_list += f' {i["name"]} {(i["amount"])} {i["measurement_unit"]}  \n'
-        return Response(shoping_list, status=status.HTTP_200_OK, content_type='text/plain')
+            shoping_list.write(f'{i["name"]} {(i["amount"])} {i["measurement_unit"]}\n')
+        shoping_list.close()
+        shoping_list = open('shopping_list.txt', 'rb')
+        return FileResponse(shoping_list, content_type='text/plain')
 
 
 class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
