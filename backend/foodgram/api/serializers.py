@@ -32,8 +32,8 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField(read_only=True)
+    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     tags = TagSerializer('tags', many=True, read_only=True)
     author = CustomUserSerializer('author', read_only=True)
     ingredients = IngredientInRecipeSerializer(source='recipe_to_ingredient', many=True, read_only=True)

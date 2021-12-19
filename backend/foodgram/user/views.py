@@ -1,11 +1,9 @@
 from django.contrib.auth import get_user_model
-from rest_framework import filters, permissions, status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from djoser.views import UserViewSet
 from . import serializers
-from .permissions import *
 from django.shortcuts import get_object_or_404
 
 User = get_user_model()

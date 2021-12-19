@@ -8,8 +8,6 @@ from rest_framework.response import Response
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
-from django_filters.rest_framework import DjangoFilterBackend
-
 
 User = get_user_model()
 
@@ -32,45 +30,11 @@ class IngredientViewSet(viewsets.mixins.ListModelMixin,
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    '''
-    -Фильтрация по подписке и списку избранного
-    -Загрузка картинок
-    '''
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
     permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
     filter_class = RecipeFilter
-    # filter_backends = (DjangoFilterBackend,)
-    # filter_fields = ('is_favorited', 'is_in_shopping_cart')
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            # is_favorited = self.request.query_params.get('is_favorited')
-            # if is_favorited is not None:
-            #     for i in range(len(serializer.data)):
-            #         if serializer.data[i]['is_favorited'] != is_favorited:
-            #             serializer.data.pop(i)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #
-    #     is_favorited = self.request.query_params.get('is_favorited')
-    #     if is_favorited is not None:
-    #         for i in range(len(queryset)):
-    #
-    #
-    #
-    #
-    #     return queryset
 
     def create(self, request, *args, **kwargs):
         serializer = RecipeSerializer(data=request.data)
