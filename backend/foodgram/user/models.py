@@ -22,11 +22,11 @@ class CustomUser(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.is_superuser or self.role == 'admin'
+        return self.is_superuser or self.role == self.Roles.ADMIN
 
     @property
     def is_user(self):
-        return self.role == 'user'
+        return self.role == self.Roles.USER
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} {self.email}'

@@ -1,6 +1,9 @@
 from rest_framework import viewsets, filters, permissions, status, renderers
-from .models import *
-from .serializers import *
+from .models import Ingredient, Recipe, IngredientInRecipe, Tag
+from django.contrib.auth import get_user_model
+from .serializers import IngredientSerializer, TagSerializer,\
+    RecipeSerializer, RecipeSuccessAddSerializer
+from django.db import transaction
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPageLimitPagination
 from .permissions import IsOwnerOrReadOnly
@@ -36,15 +39,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
     filter_class = RecipeFilter
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = RecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
-        for ingredient in request.data['ingredients']:
-            IngredientInRecipe.objects.create(recipe=serializer.instance,
-                                              ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
-                                              amount=ingredient['amount']
-                                              )
+        if request.POST.get('ingredients', False):
+            IngredientInRecipe.objects.bulk_create(
+                [IngredientInRecipe(recipe=serializer.instance,
+                                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
+                                amount=ingredient['amount'])
+                for ingredient in request.data['ingredients']]
+        )
+
+        #
+        # for ingredient in request.data['ingredients']:
+        #     IngredientInRecipe.objects.bulk_create(
+        #         recipe=serializer.instance,
+        #                                       ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
+        #                                       amount=ingredient['amount']
+        #                                       )
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -54,9 +68,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeSerializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            instance._prefetched_objects_cache = {}
 
         IngredientInRecipe.objects.filter(recipe=serializer.instance).delete()
         for ingredient in request.data['ingredients']:

@@ -20,7 +20,6 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id',  'author',
-                    #'is_favorited', 'is_in_shopping_cart',
                     'name', 'image', 'text', 'cooking_time')
     search_fields = ('name',)
     empty_value_display = '-пусто-'

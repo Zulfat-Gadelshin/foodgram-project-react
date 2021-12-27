@@ -5,10 +5,6 @@ from pathlib import Path
 
 
 def run():
-    # currentDirectory = Path('../../data/ingredients.csv')
-    #
-    # for currentFile in currentDirectory.iterdir():
-    #     print(currentFile)
     with open(Path('../../data/ingredients.csv'), newline='') as f:
         reader = csv.reader(f)
         data = list(reader)
