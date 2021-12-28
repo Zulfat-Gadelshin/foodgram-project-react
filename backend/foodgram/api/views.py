@@ -44,21 +44,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
-        if request.POST.get('ingredients', False):
-            IngredientInRecipe.objects.bulk_create(
-                [IngredientInRecipe(recipe=serializer.instance,
+        if request.data['ingredients'] is not None:
+            ingredient_list = [IngredientInRecipe(recipe=serializer.instance,
                                 ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
                                 amount=ingredient['amount'])
                 for ingredient in request.data['ingredients']]
-        )
-
-        #
-        # for ingredient in request.data['ingredients']:
-        #     IngredientInRecipe.objects.bulk_create(
-        #         recipe=serializer.instance,
-        #                                       ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
-        #                                       amount=ingredient['amount']
-        #                                       )
+            IngredientInRecipe.objects.bulk_create(ingredient_list)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -70,11 +61,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=request.user)
 
         IngredientInRecipe.objects.filter(recipe=serializer.instance).delete()
-        for ingredient in request.data['ingredients']:
-            IngredientInRecipe.objects.create(recipe=serializer.instance,
-                                              ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
-                                              amount=ingredient['amount']
-                                              )
+        if request.data['ingredients'] is not None:
+            ingredient_list = [IngredientInRecipe(recipe=serializer.instance,
+                                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
+                                amount=ingredient['amount'])
+                for ingredient in request.data['ingredients']]
+            IngredientInRecipe.objects.bulk_create(ingredient_list)
 
         return Response(serializer.data)
 

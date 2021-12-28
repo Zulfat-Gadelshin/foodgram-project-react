@@ -32,7 +32,7 @@ class Recipe(models.Model):
     name = models.CharField(max_length=200, verbose_name='Имя рецепта')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
                                related_name='recipes', verbose_name='Автор рецепта')
-    image = models.ImageField(verbose_name='Картинка', upload_to='recipes')
+    image = models.ImageField(verbose_name='Картинка', upload_to='recipes', null=True, blank=True)
     text = models.TextField(verbose_name='Описание рецепта')
     cooking_time = models.IntegerField(
         validators=[MinValueValidator(1), ],
