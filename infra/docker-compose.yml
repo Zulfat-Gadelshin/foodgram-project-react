@@ -26,6 +26,8 @@ services:
       - ../backend/static_value:/code/back_static/
     env_file:
       - ../.env
+    depends_on:
+      - db
 
 
   nginx:
