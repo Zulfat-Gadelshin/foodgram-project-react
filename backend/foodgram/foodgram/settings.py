@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g1(&s&vmyct0flan8dzx0ia3ww0mgn*u5oo^00h!e2$=(wg(8s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
 	'51.250.26.13',
@@ -93,13 +93,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-#	'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+	'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
 #	'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': os.getenv('DB_NAME', 'foodgram'),
-#        'USER': os.getenv('POSTGRES_USER', 'foodgram_user'),
-#        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'admin'),
-#        'HOST': os.getenv('DB_HOST', 'db'),
-#        'PORT': os.getenv('DB_PORT', '5432')
+        'NAME': os.getenv('DB_NAME', 'foodgram'),
+        'USER': os.getenv('POSTGRES_USER', 'foodgram_user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'admin'),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '5432')
     }
 }
 
@@ -143,7 +143,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = (os.path.join(BASE_DIR, 'static/'))
+
 #STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60000),

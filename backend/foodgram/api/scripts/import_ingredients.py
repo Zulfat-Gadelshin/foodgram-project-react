@@ -5,7 +5,8 @@ from pathlib import Path
 
 
 def run():
-    with open(Path('../../data/ingredients.csv'), newline='') as f:
+    Ingredient.objects.create(name='Ингредиент1', measurement_unit='ед.изм.').save()
+    with open(Path('../../data/ingredients.csv'), newline='',encoding="cp1251") as f:
         reader = csv.reader(f)
         data = list(reader)
         for row in data:
