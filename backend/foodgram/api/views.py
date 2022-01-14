@@ -105,7 +105,7 @@ class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
 
-    def create(self, request, recipe_id):
+    def get(self, request, recipe_id):
         fav = get_object_or_404(Recipe, id=recipe_id)
         user = request.user
 
@@ -132,7 +132,7 @@ class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
                           viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
 
-    def create(self, request, recipe_id):
+    def get(self, request, recipe_id):
         shop = get_object_or_404(Recipe, id=recipe_id)
         user = request.user
 
