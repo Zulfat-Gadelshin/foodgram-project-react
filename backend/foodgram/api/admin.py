@@ -26,6 +26,11 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
+    def save_model(self, request, obj, form, change):
+        image_name, image_format = str(obj.image).split(".")
+        obj.image.name = str(obj.name) + "." + image_format
+        return super().save_model(request, obj, form, change)
+
 
 @admin.register(IngredientInRecipe)
 class IngredientInRecipeAdmin(admin.ModelAdmin):
