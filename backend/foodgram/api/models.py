@@ -38,7 +38,7 @@ class Recipe(models.Model):
                                related_name='recipes',
                                verbose_name='Автор рецепта')
     image = models.ImageField(verbose_name='Картинка',
-                              upload_to='recipes', null=True, blank=True)
+                              upload_to='recipes')
     text = models.TextField(verbose_name='Описание рецепта')
     cooking_time = models.IntegerField(
         validators=[MinValueValidator(1), ],
