@@ -14,7 +14,8 @@ class CustomUser(AbstractUser):
     bio = models.CharField(max_length=254, null=True, blank=True)
     role = models.CharField(max_length=50, verbose_name='Название роли',
                             null=True, choices=Roles.choices)
-    email = models.EmailField(verbose_name='email', unique=True, max_length=254)
+    email = models.EmailField(
+        verbose_name='email', unique=True, max_length=254)
     username = models.CharField(unique=True, max_length=150)
     subscriptions = models.ManyToManyField("self", symmetrical=False)
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']

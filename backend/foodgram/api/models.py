@@ -3,13 +3,14 @@ from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
 from colorfield.fields import ColorField
 
-
 CustomUser = get_user_model()
 
 
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=200, unique=True, verbose_name='Имя Тэга')
+    name = models.CharField(max_length=200,
+                            unique=True,
+                            verbose_name='Имя Тэга')
     color = ColorField(verbose_name='Цвет Тэга')
     slug = models.SlugField(max_length=200, unique=True)
 
@@ -20,7 +21,8 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=200, verbose_name='Имя Ингридиента')
-    measurement_unit = models.CharField(max_length=200, verbose_name='Единицы измерения')
+    measurement_unit = models.CharField(max_length=200,
+                                        verbose_name='Единицы измерения')
 
     def __str__(self):
         return self.name
@@ -28,18 +30,23 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     id = models.BigAutoField(primary_key=True)
-    tags = models.ManyToManyField(Tag, related_name='tags_recipes', verbose_name='Тэг рецепта')
+    tags = models.ManyToManyField(Tag,
+                                  related_name='tags_recipes',
+                                  verbose_name='Тэг рецепта')
     name = models.CharField(max_length=200, verbose_name='Имя рецепта')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-                               related_name='recipes', verbose_name='Автор рецепта')
-    image = models.ImageField(verbose_name='Картинка', upload_to='recipes', null=True, blank=True)
+                               related_name='recipes',
+                               verbose_name='Автор рецепта')
+    image = models.ImageField(verbose_name='Картинка',
+                              upload_to='recipes', null=True, blank=True)
     text = models.TextField(verbose_name='Описание рецепта')
     cooking_time = models.IntegerField(
         validators=[MinValueValidator(1), ],
         verbose_name='Время приготовления')
     ingredients = models.ManyToManyField(Ingredient,
                                          through='IngredientInRecipe',
-                                         through_fields=('recipe', 'ingredient'),
+                                         through_fields=(
+                                             'recipe', 'ingredient'),
                                          related_name='ingredients_recipes',
                                          blank=True,
                                          verbose_name='Ингридиенты рецепта')
@@ -64,7 +71,8 @@ class IngredientInRecipe(models.Model):
                                verbose_name='рецепт с ингридиентом')
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE,
-        related_name='ingredient_to_recipe', verbose_name='ингридиенты в рецепте')
+        related_name='ingredient_to_recipe',
+        verbose_name='ингридиенты в рецепте')
     amount = models.IntegerField(
         validators=[MinValueValidator(1)],
         verbose_name='количество ингридиента')

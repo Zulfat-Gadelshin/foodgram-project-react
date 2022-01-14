@@ -22,7 +22,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return False
 
     class Meta:
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
+        fields = ('email', 'id', 'username',
+                  'first_name', 'last_name', 'is_subscribed')
         model = User
 
 
@@ -41,7 +42,8 @@ class CustomUserWithRecipesSerializer(serializers.ModelSerializer):
         return obj.recipes.count()
 
     def get_recipes(self, obj):
-        recipes_limit = int(self.context.get('request').GET.get('recipes_limit', '-1'))
+        recipes_limit = int(self.context.get(
+            'request').GET.get('recipes_limit', '-1'))
         qs = obj.recipes.all()
         if recipes_limit > -1:
             qs = qs[:recipes_limit]

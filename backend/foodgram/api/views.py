@@ -1,9 +1,11 @@
-from rest_framework import viewsets, filters, permissions, status, renderers
+from rest_framework import viewsets, permissions, status
 from .models import Ingredient, Recipe, IngredientInRecipe, Tag
 from django.contrib.auth import get_user_model
-from .serializers import IngredientSerializer, TagSerializer,\
-    RecipeSerializer, RecipeSuccessAddSerializer
+from .serializers import IngredientSerializer
+from .serializers import TagSerializer, RecipeSerializer
+from .serializers import RecipeSuccessAddSerializer
 from django.db import transaction
+
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPageLimitPagination
 from .permissions import IsOwnerOrReadOnly
@@ -45,26 +47,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
         if request.data['ingredients'] is not None:
-            ingredient_list = [IngredientInRecipe(recipe=serializer.instance,
-                                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
-                                amount=ingredient['amount'])
+            ingredient_list = [IngredientInRecipe(
+                recipe=serializer.instance,
+                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
+                amount=ingredient['amount'])
                 for ingredient in request.data['ingredients']]
             IngredientInRecipe.objects.bulk_create(ingredient_list)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data,
+                        status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = RecipeSerializer(instance, data=request.data, partial=partial)
+        serializer = RecipeSerializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
 
         IngredientInRecipe.objects.filter(recipe=serializer.instance).delete()
         if request.data['ingredients'] is not None:
-            ingredient_list = [IngredientInRecipe(recipe=serializer.instance,
-                                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
-                                amount=ingredient['amount'])
+            ingredient_list = [IngredientInRecipe(
+                recipe=serializer.instance,
+                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
+                amount=ingredient['amount'])
                 for ingredient in request.data['ingredients']]
             IngredientInRecipe.objects.bulk_create(ingredient_list)
 
@@ -73,7 +79,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=('GET',))
     def download_shopping_cart(self, request):
         cur_user = request.user
-        serializer = RecipeSerializer(cur_user.cards_recipes.all(), context={'request': request}, many=True)
+        serializer = RecipeSerializer(
+            cur_user.cards_recipes.all(),
+            context={'request': request}, many=True)
         shoping_cart = []
         ingridients_name = []
         for recipe in serializer.data[:]:
@@ -86,7 +94,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     shoping_cart.append(ingredient)
         shoping_list = open('shopping_list.txt', 'w+', encoding='utf-8')
         for i in shoping_cart:
-            shoping_list.write(f'{i["name"]} {(i["amount"])} {i["measurement_unit"]}\n')
+            shoping_list.write(
+                f'{i["name"]} {(i["amount"])} {i["measurement_unit"]}\n')
         shoping_list.close()
         shoping_list = open('shopping_list.txt', 'rb')
         return FileResponse(shoping_list, content_type='text/plain')
@@ -105,7 +114,8 @@ class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
         user.favorite_recipes.add(fav)
-        serializer = RecipeSuccessAddSerializer(fav, context={'request': request})
+        serializer = RecipeSuccessAddSerializer(
+            fav, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, recipe_id):
@@ -131,7 +141,8 @@ class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
         user.cards_recipes.add(shop)
-        serializer = RecipeSuccessAddSerializer(shop, context={'request': request})
+        serializer = RecipeSuccessAddSerializer(
+            shop, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, recipe_id):

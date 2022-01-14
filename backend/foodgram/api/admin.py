@@ -19,7 +19,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id',  'author',
+    list_display = ('id', 'author',
                     'name', 'image', 'text', 'cooking_time')
     search_fields = ('name',)
     empty_value_display = '-пусто-'
