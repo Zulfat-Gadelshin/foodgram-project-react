@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status, mixins
+from rest_framework import viewsets, permissions, status
 from .models import Ingredient, Recipe, IngredientInRecipe, Tag
 from django.contrib.auth import get_user_model
 from .serializers import IngredientSerializer
