@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from user.serializers import CustomUserSerializer
 from .models import Tag, Ingredient, Recipe, IngredientInRecipe
-#from .image_converter import Base64ImageField
 from base64 import b64decode
 from django.core.files.base import ContentFile
-from django.http import HttpResponse
 from imghdr import what
 from rest_framework.serializers import ImageField
 from six import string_types
@@ -33,7 +31,9 @@ class Base64ImageField(ImageField):
         extension = what(file_name, decoded_file)
         return "jpg" if extension == "jpeg" else extension
 
+
 class TagSerializer(serializers.ModelSerializer):
+
     class Meta:
         fields = '__all__'
         model = Tag
@@ -47,6 +47,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSuccessAddSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
+
     class Meta:
         fields = ('id', 'name', 'image', 'cooking_time')
         model = Recipe
@@ -54,7 +55,8 @@ class RecipeSuccessAddSerializer(serializers.ModelSerializer):
 
 class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit')
 
     class Meta:
         fields = ('name', 'amount', 'measurement_unit')
@@ -66,7 +68,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     tags = TagSerializer('tags', many=True, read_only=True)
     author = CustomUserSerializer('author', read_only=True)
-    ingredients = IngredientInRecipeSerializer(source='recipe_to_ingredient', many=True, read_only=True)
+    ingredients = IngredientInRecipeSerializer(
+        source='recipe_to_ingredient', many=True, read_only=True)
 
     def get_is_favorited(self, obj):
         if hasattr(self.context.get('request'), 'user'):
