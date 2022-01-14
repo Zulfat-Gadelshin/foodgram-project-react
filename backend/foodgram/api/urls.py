@@ -12,9 +12,12 @@ router.register(
 router.register('recipes', views.RecipeViewSet, basename='recipes')
 router.register('recipes/(?P<recipe_id>[0-9]+)/favorite',
                 views.FavoriteViewSet, basename='favorite')
-router.register('recipes/(?P<recipe_id>[0-9]+)/shopping_cart',
-                views.ShoppingCartViewSet, basename='shopping_cart')
+# router.register('recipes/(?P<recipe_id>[0-9]+)/shopping_cart',
+#                 views.ShoppingCartViewSet, basename='shopping_cart')
 
 urlpatterns = [
+
     path('', include(router.urls)),
+    path('recipes/(?P<recipe_id>[0-9]+)/shopping_cart',
+         views.ShoppingCartViewSet.as_view(), name='shopping_cart'),
 ]

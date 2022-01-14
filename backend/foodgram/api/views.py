@@ -129,11 +129,8 @@ class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
-#                           viewsets.GenericViewSet):
-# class ShoppingCartViewSet(mixins.CreateView,
-#                           mixins.RetrieveModelMixin):
-class ShoppingCartViewSet(APIView):
+class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
+                          viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request, recipe_id):
