@@ -17,15 +17,14 @@ services:
       - ../frontend/:/app/result_build/
   
   web:
-    build: 
-      context: ../backend/foodgram
-      dockerfile: Dockerfile
+#    build: 
+#      context: ../backend/foodgram
+#      dockerfile: Dockerfile
+    image: zulfatgadelshin/foodgram:v1
     restart: always
     volumes:
-#      - ../backend/media_value:/code/media/
-#      - ../backend/static_value:/code/static/
-      - static_value:/code/static/
-      - media_value:/code/media/
+      - ../backend/foodgram/static_value:/code/django_static/
+      - ../backend/foodgram/media_value:/code/media/
     env_file:
       - ../.env
 
@@ -39,8 +38,8 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
-      - media_value:/var/html/media/
-      - static_value:/var/html/static/
+      - ../backend/foodgram/media_value:/var/html/media/
+      - ../backend/foodgram/static_value:/var/html/django_static/
     depends_on:
       - web
 
