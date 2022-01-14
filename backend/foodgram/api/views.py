@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
+from rest_framework.views import APIView
 
 User = get_user_model()
 
@@ -130,8 +131,9 @@ class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
 
 # class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
 #                           viewsets.GenericViewSet):
-class ShoppingCartViewSet(mixins.CreateView,
-                          mixins.RetrieveModelMixin):
+# class ShoppingCartViewSet(mixins.CreateView,
+#                           mixins.RetrieveModelMixin):
+class ShoppingCartViewSet(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request, recipe_id):
