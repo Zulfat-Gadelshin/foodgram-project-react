@@ -15,7 +15,8 @@ class CustomUser(AbstractUser):
     email = models.EmailField(
         verbose_name='email', unique=True, max_length=254)
     username = models.CharField(unique=True, max_length=150)
-    subscriptions = models.ManyToManyField("self", symmetrical=False, null=True, blank=True)
+    subscriptions = models.ManyToManyField(
+        "self", symmetrical=False, null=True, blank=True)
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
