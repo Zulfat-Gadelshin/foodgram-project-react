@@ -56,8 +56,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           stack_file_name: infra/docker-compose.yaml
           script: |
-            sudo ls
-            sudo pwd
+            cd foodgram-project-react/infra
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
             sudo docker-compose stop
             yes | sudo docker-compose rm web
