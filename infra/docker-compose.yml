@@ -20,7 +20,7 @@ services:
 #    build: 
 #      context: ../backend/foodgram
 #      dockerfile: Dockerfile
-    image: zulfatgadelshin/foodgram:v1
+    image: zulfatgadelshin/foodgram:v1.1
     restart: always
     volumes:
       - ../backend/foodgram/static_value:/code/django_static/
