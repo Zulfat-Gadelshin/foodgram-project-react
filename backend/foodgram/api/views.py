@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, mixins
 from .models import Ingredient, Recipe, IngredientInRecipe, Tag
 from django.contrib.auth import get_user_model
 from .serializers import IngredientSerializer
@@ -128,8 +128,10 @@ class FavoriteViewSet(viewsets.mixins.CreateModelMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
-                          viewsets.GenericViewSet):
+#class ShoppingCartViewSet(viewsets.mixins.CreateModelMixin,
+#                          viewsets.GenericViewSet):
+class ShoppingCartViewSet(mixins.CreateView,
+                          mixins.RetrieveModelMixin):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request, recipe_id):
