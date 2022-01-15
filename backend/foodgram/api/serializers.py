@@ -46,7 +46,12 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSuccessAddSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
+    image = serializers.ImageField(
+        max_length=None,
+        required=True,
+        allow_empty_file=False,
+        use_url=True,
+    )
 
     class Meta:
         fields = ('id', 'name', 'image', 'cooking_time')
