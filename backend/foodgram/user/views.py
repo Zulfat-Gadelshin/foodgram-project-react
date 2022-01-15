@@ -41,7 +41,8 @@ class SubscribeViewSet(viewsets.mixins.CreateModelMixin,
                        viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
 
-    def create(self, request, user_id):
+    # def create(self, request, user_id):
+    def get(self, request, user_id):
         sub = get_object_or_404(User, id=user_id)
         user = request.user
         if user.id == user_id:

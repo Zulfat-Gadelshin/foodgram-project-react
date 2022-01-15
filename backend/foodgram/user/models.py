@@ -10,14 +10,13 @@ class CustomUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=150, blank=False, null=False)
     last_name = models.CharField(max_length=150, blank=False, null=False)
-    confirmation_code = models.CharField(max_length=16, verbose_name='Код')
-    bio = models.CharField(max_length=254, null=True, blank=True)
     role = models.CharField(max_length=50, verbose_name='Название роли',
                             null=True, choices=Roles.choices)
     email = models.EmailField(
         verbose_name='email', unique=True, max_length=254)
     username = models.CharField(unique=True, max_length=150)
-    subscriptions = models.ManyToManyField("self", symmetrical=False)
+    subscriptions = models.ManyToManyField(
+        "self", symmetrical=False, null=True, blank=True)
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 

@@ -40,6 +40,7 @@ jobs:
         uses: docker/build-push-action@v2 # Выполняет push образа в DockerHub 
         with:
           push: true
+          context: ./backend/foodgram/
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram:latest
   
   deploy:
@@ -53,9 +54,9 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          stack_file_name: docker-compose.yaml
+          stack_file_name: infra/docker-compose.yaml
           script: |
-            cd infra/
+            cd foodgram-project-react/infra
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
             sudo docker-compose stop
             yes | sudo docker-compose rm web
