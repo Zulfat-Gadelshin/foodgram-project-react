@@ -10,8 +10,11 @@ class CustomUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=150, blank=False, null=False)
     last_name = models.CharField(max_length=150, blank=False, null=False)
-    role = models.CharField(max_length=50, verbose_name='Название роли',
-                            null=True, choices=Roles.choices, default=Roles.USER)
+    role = models.CharField(max_length=50,
+                            verbose_name='Название роли',
+                            null=True,
+                            choices=Roles.choices,
+                            default=Roles.USER)
     email = models.EmailField(
         verbose_name='email', unique=True, max_length=254)
     username = models.CharField(unique=True, max_length=150)
