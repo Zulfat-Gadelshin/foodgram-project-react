@@ -39,7 +39,7 @@ services:
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
       - ../backend/foodgram/media_value:/var/html/media/
-      - ../backend/foodgram/static_value:/var/html/django_static/
+      - ../backend/foodgram/static_value:/var/html/static/
     depends_on:
       - web
 
