@@ -13,7 +13,6 @@ from rest_framework.response import Response
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
-from rest_framework.views import APIView
 
 User = get_user_model()
 
