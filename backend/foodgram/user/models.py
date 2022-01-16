@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=150, blank=False, null=False)
     last_name = models.CharField(max_length=150, blank=False, null=False)
-    # confirmation_code = models.CharField(max_length=16, verbose_name='Код', null=True, blank=True)
+    confirmation_code = models.CharField(max_length=16, verbose_name='Код')
     role = models.CharField(max_length=50,
                             verbose_name='Название роли',
                             null=True,

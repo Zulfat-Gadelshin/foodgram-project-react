@@ -3,12 +3,11 @@ from rest_framework.routers import DefaultRouter
 from djoser.views import TokenCreateView, TokenDestroyView
 
 from . import views
-
 router = DefaultRouter()
 
 router.register('users/(?P<user_id>[0-9]+)/subscribe',
                 views.SubscribeViewSet, basename='subscribe')
-router.register('users', views.UserViewSet, basename='user')
+router.register('users', views.UsersViewSet, basename='subscriptions')
 
 
 urlpatterns = [

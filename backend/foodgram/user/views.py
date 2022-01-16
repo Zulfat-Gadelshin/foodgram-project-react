@@ -10,10 +10,17 @@ from . import serializers
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.CustomUserSerializer
     pagination_class = PageNumberPagination
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.UserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @action(detail=False, methods=('GET',),
             permission_classes=[permissions.IsAuthenticated])
