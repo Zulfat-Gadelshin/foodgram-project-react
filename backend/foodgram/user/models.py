@@ -1,11 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-# from django.contrib.auth.models import AbstractUser
-
-User = get_user_model()
+from django.contrib.auth.models import AbstractUser
 
 
-class CustomUser(User):
+class CustomUser(AbstractUser):
     class Roles(models.TextChoices):
         ADMIN = 'admin'
         USER = 'user'
@@ -13,6 +11,7 @@ class CustomUser(User):
     id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=150, blank=False, null=False)
     last_name = models.CharField(max_length=150, blank=False, null=False)
+    confirmation_code = models.CharField(max_length=16, verbose_name='Код', null=True, blank=True)
     role = models.CharField(max_length=50,
                             verbose_name='Название роли',
                             null=True,
