@@ -18,6 +18,4 @@ router.register('recipes/(?P<recipe_id>[0-9]+)/shopping_cart',
 urlpatterns = [
 
     path('', include(router.urls)),
-    # path('recipes/(?P<recipe_id>[0-9]+)/shopping_cart',
-    #      views.ShoppingCartViewSet, name='shopping_cart'),
 ]

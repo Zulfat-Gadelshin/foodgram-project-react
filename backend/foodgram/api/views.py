@@ -3,7 +3,7 @@ from .models import Ingredient, Recipe, IngredientInRecipe, Tag
 from django.contrib.auth import get_user_model
 from .serializers import IngredientSerializer
 from .serializers import TagSerializer, RecipeSerializer
-from .serializers import RecipeSuccessAddSerializer
+from .serializers import CreateRecipeSerializer
 from django.db import transaction
 
 from .filters import IngredientFilter, RecipeFilter
