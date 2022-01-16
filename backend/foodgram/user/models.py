@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser
 
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractBaseUser):
     class Roles(models.TextChoices):
         ADMIN = 'admin'
         USER = 'user'
@@ -20,7 +20,7 @@ class CustomUser(AbstractUser):
     username = models.CharField(unique=True, max_length=150)
     subscriptions = models.ManyToManyField(
         "self", symmetrical=False)
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'email']
     USERNAME_FIELD = 'email'
 
     @property
