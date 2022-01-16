@@ -3,7 +3,7 @@ FROM python:3.7
 WORKDIR /code
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-COPY . . 
+COPY . .
 CMD python manage.py makemigrations &&\
  python manage.py migrate --run-syncdb &&\
  python manage.py collectstatic --noinput &&\
