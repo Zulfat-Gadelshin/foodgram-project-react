@@ -20,7 +20,7 @@ class CustomUser(AbstractBaseUser):
     username = models.CharField(unique=True, max_length=150)
     subscriptions = models.ManyToManyField(
         "self", symmetrical=False)
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'email']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
     @property
