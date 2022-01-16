@@ -30,22 +30,22 @@ class Base64ImageField(ImageField):
         return "jpg" if extension == "jpeg" else extension
 
 
-def get_content(ingredients, name_field, measure_field, amount_field):
-    products = {}
-    for ingredient in ingredients:
-        name, measurement, amount = (
-            ingredient[name_field],
-            ingredient[measure_field],
-            ingredient[amount_field],
-        )
-        product = name + f" ({measurement}) — "
-        if product in products:
-            products[product] += amount
-        else:
-            products[product] = amount
-    content = ""
-    for product in products:
-        content += product + str(products[product]) + "\n"
-    response = HttpResponse(content, content_type="text/plain")
-    response["Content-Disposition"] = "attachment; filename=to_buy.txt"
-    return response
+# def get_content(ingredients, name_field, measure_field, amount_field):
+#     products = {}
+#     for ingredient in ingredients:
+#         name, measurement, amount = (
+#             ingredient[name_field],
+#             ingredient[measure_field],
+#             ingredient[amount_field],
+#         )
+#         product = name + f" ({measurement}) — "
+#         if product in products:
+#             products[product] += amount
+#         else:
+#             products[product] = amount
+#     content = ""
+#     for product in products:
+#         content += product + str(products[product]) + "\n"
+#     response = HttpResponse(content, content_type="text/plain")
+#     response["Content-Disposition"] = "attachment; filename=to_buy.txt"
+#     return response
