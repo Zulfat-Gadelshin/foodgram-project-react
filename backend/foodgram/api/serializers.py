@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user.serializers import CustomUserSerializer
 from .models import Tag, Ingredient, Recipe, IngredientInRecipe
-
+from .image_converter import Base64ImageField
 
 class TagSerializer(serializers.ModelSerializer):
 
@@ -26,41 +26,6 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
         model = IngredientInRecipe
 
 
-class CreateRecipeSerializer(serializers.ModelSerializer):
-    is_favorited = serializers.SerializerMethodField(read_only=True)
-    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
-    tags = TagSerializer('tags', many=True, read_only=True)
-    author = CustomUserSerializer('author', read_only=True)
-    ingredients = IngredientInRecipeSerializer(
-        source='recipe_to_ingredient', many=True, read_only=True)
-    image = serializers.ImageField(
-        max_length=None,
-        required=True,
-        allow_empty_file=False,
-        use_url=True,
-    )
-
-    def get_is_favorited(self, obj):
-        if hasattr(self.context.get('request'), 'user'):
-            user = self.context.get('request').user
-            if user.is_authenticated:
-                return user.favorite_recipes.filter(id=obj.id).exists()
-        return False
-
-    def get_is_in_shopping_cart(self, obj):
-        if hasattr(self.context.get('request'), 'user'):
-            user = self.context.get('request').user
-            if user.is_authenticated:
-                return user.cards_recipes.filter(id=obj.id).exists()
-        return False
-
-    class Meta:
-        fields = ('id', 'tags', 'author', 'ingredients',
-                  'is_favorited', 'is_in_shopping_cart',
-                  'name', 'image', 'text', 'cooking_time')
-        model = Recipe
-
-
 class RecipeSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
@@ -68,12 +33,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer('author', read_only=True)
     ingredients = IngredientInRecipeSerializer(
         source='recipe_to_ingredient', many=True, read_only=True)
-    image = serializers.ImageField(
-        max_length=None,
-        required=True,
-        allow_empty_file=False,
-        use_url=True,
-    )
+    image = Base64ImageField()
 
     def get_is_favorited(self, obj):
         if hasattr(self.context.get('request'), 'user'):
@@ -94,3 +54,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
         model = Recipe
+
+
+class CreateRecipeSerializer(RecipeSerializer):
+    pass
