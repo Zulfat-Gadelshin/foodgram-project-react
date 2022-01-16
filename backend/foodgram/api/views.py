@@ -38,11 +38,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPageLimitPagination
-    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
+    # permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
     filter_class = RecipeFilter
 
-    @transaction.atomic
     @action(detail=False, permission_classes=[permissions.IsAuthenticated])
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
