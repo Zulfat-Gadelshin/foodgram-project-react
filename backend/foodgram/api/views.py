@@ -41,7 +41,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
     filter_class = RecipeFilter
 
-    @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(data=request.data)
@@ -58,7 +57,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data,
                         status=status.HTTP_201_CREATED, headers=headers)
 
-    @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
