@@ -4,14 +4,6 @@ from .models import Tag, Ingredient, Recipe, IngredientInRecipe
 from .image_converter import Base64ImageField
 
 
-class RecipeSuccessAddSerializer(serializers.ModelSerializer):
-    # image = Base64ImageField()
-
-    class Meta:
-        fields = ('id', 'name', 'image', 'cooking_time')
-        model = Recipe
-
-
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -42,7 +34,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer('author', read_only=True)
     ingredients = IngredientInRecipeSerializer(
         source='recipe_to_ingredient', many=True, read_only=True)
-    # image = Base64ImageField()
+    image = Base64ImageField()
 
     def get_is_favorited(self, obj):
         if hasattr(self.context.get('request'), 'user'):
@@ -63,6 +55,16 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
         model = Recipe
+
+    def to_representation(self, obj):
+        data = super().to_representation(obj)
+        data["image"] = obj.image.url
+        return data
+
+
+class RecipeSuccessAddSerializer(RecipeSerializer):
+    class Meta:
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class CreateRecipeSerializer(RecipeSerializer):

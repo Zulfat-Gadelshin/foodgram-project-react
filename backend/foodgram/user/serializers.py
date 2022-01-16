@@ -1,11 +1,14 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from api.models import Recipe
+from api.image_converter import Base64ImageField
 
 User = get_user_model()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
+    image = Base64ImageField
+
     class Meta:
         fields = ('id', 'name', 'image', 'cooking_time')
         model = Recipe
