@@ -42,6 +42,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_class = RecipeFilter
 
     @transaction.atomic
+    @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -57,6 +58,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data,
                         status=status.HTTP_201_CREATED, headers=headers)
 
+    @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -76,7 +78,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(detail=False, methods=('GET',))
+    @action(detail=False, methods=('GET',),
+            permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
         cur_user = request.user
         serializer = RecipeSerializer(
