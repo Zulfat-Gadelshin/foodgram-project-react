@@ -8,7 +8,6 @@ from django.db import transaction
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPageLimitPagination
-from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
