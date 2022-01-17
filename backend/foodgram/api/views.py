@@ -41,7 +41,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        serializer = CreateRecipeSerializer(data=request.data)
+        serializer = RecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
         if request.data['ingredients'] is not None:
@@ -58,7 +58,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = CreateRecipeSerializer(
+        serializer = RecipeSerializer(
             instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)

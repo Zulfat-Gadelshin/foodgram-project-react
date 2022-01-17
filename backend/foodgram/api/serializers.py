@@ -66,7 +66,3 @@ class RecipeSuccessAddSerializer(RecipeSerializer):
     class Meta:
         fields = ('id', 'name', 'image', 'cooking_time')
         model = Recipe
-
-
-class CreateRecipeSerializer(RecipeSerializer):
-    pass
