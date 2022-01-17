@@ -19,7 +19,7 @@ class RecipeFilter(django_filters.FilterSet):
     tags = django_filters.CharFilter(field_name='tags__slug',
                                      lookup_expr='exact')
     is_in_shopping_cart = django_filters.BooleanFilter(
-        method="get_is_in_shopping_cart"
+        method='get_is_in_shopping_cart'
     )
     is_favorited = django_filters.BooleanFilter(method="get_is_favorited")
 
