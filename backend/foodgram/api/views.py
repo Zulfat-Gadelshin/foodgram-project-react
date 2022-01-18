@@ -29,7 +29,7 @@ class IngredientViewSet(viewsets.mixins.ListModelMixin,
                         viewsets.GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_class = IngredientFilter
+    filterset_class = IngredientFilter
     pagination_class = None
 
 
