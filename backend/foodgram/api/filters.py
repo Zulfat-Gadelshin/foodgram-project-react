@@ -16,12 +16,17 @@ class IngredientFilter(django_filters.FilterSet):
 
 
 class RecipeFilter(django_filters.FilterSet):
-    tags = django_filters.CharFilter(field_name='tags__slug',
-                                     lookup_expr='exact')
+    tags = django_filters.AllValuesMultipleFilter(
+        method="get_tagged_recipes",
+        field_name="tags__slug",
+    )
     is_in_shopping_cart = django_filters.BooleanFilter(
         method='get_is_in_shopping_cart'
     )
     is_favorited = django_filters.BooleanFilter(method="get_is_favorited")
+
+    def get_tagged_recipes(self, queryset, name, tags):
+        return queryset.filter(tags__slug__in=tags).distinct("pk")
 
     def get_is_in_shopping_cart(self, queryset, name, value):
         if value is True:

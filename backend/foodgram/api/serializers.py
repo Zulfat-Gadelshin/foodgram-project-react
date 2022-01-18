@@ -19,11 +19,12 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.ReadOnlyField(source='ingredient.name')
+    id = serializers.ReadOnlyField(source='ingredient.id')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
 
     class Meta:
-        fields = ('name', 'amount', 'measurement_unit')
+        fields = ('id', 'name', 'amount', 'measurement_unit')
         model = IngredientInRecipe
 
 

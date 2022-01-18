@@ -3,7 +3,7 @@ from .models import Ingredient, Recipe, IngredientInRecipe, Tag
 from django.contrib.auth import get_user_model
 from .serializers import IngredientSerializer
 from .serializers import TagSerializer, RecipeSerializer
-from .serializers import CreateRecipeSerializer, RecipeSuccessAddSerializer
+from .serializers import RecipeSuccessAddSerializer
 from django.db import transaction
 
 from .filters import IngredientFilter, RecipeFilter
@@ -43,7 +43,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = RecipeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(author=request.user)
+        serializer.save(author=request.user, tags=request.data['tags'])
         if request.data['ingredients'] is not None:
             ingredient_list = [IngredientInRecipe(
                 recipe=serializer.instance,
@@ -61,8 +61,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeSerializer(
             instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        serializer.save(author=request.user)
-
+        serializer.save(author=request.user, tags=request.data['tags'])
         IngredientInRecipe.objects.filter(recipe=serializer.instance).delete()
         if request.data['ingredients'] is not None:
             ingredient_list = [IngredientInRecipe(
@@ -71,7 +70,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 amount=ingredient['amount'])
                 for ingredient in request.data['ingredients']]
             IngredientInRecipe.objects.bulk_create(ingredient_list)
-
         return Response(serializer.data)
 
     @action(detail=False, methods=('GET',),

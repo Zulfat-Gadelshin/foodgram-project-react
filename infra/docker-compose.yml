@@ -17,9 +17,9 @@ services:
       - ../frontend/:/app/result_build/
   
   web:
-#     build: 
-#       context: ../backend/foodgram
-#       dockerfile: Dockerfile
+#    build: 
+#      context: ../backend/foodgram
+#      dockerfile: Dockerfile
     image: zulfatgadelshin/foodgram:latest
     restart: always
     volumes:
